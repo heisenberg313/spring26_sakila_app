@@ -54,10 +54,11 @@ jobs:
           mysql -h 127.0.0.1 -u root -padmin sakila < sakila-db/sakila-schema.sql
           mysql -h 127.0.0.1 -u root -padmin sakila < sakila-db/sakila-data.sql
         
-      - name: Run Pytest
+     - name: Run Pytest
         env:
           MYSQL_HOST: 127.0.0.1
           MYSQL_ROOT_PASSWORD: admin
+          PYTHONPATH: ${{ github.workspace }}  # <--- ADD THIS LINE
         run: pytest -v
 
   # --- STAGE 3: Build & Security Scan ---
