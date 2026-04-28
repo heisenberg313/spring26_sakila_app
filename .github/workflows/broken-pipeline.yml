@@ -1,23 +1,34 @@
 name: Broken C3 Pipeline
 
 on:
-  push:
-    branches: main  # ERROR: Missing []
-
+ push:
+ branches: main
 jobs:
-  build:
-    runs-on: ubuntu  # ERROR: Invalid runner tag
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+ test:
+ runs-on: ubuntu
+ steps:
+ - uses: actions/checkout@v4
+ - name: Setup Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: 3.9
+ - name: Install deps
+ run: |
+ pip install -r requirements.txt
+ pip install pytest
+ - name: Run Tests
+ run: pytest tests/ -v
+ build:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Build Image
+ run: docker build -t myapp .
+ deploy:
+ runs-on: ubuntu-latest
+ needs: test
+ if: github.ref == 'refs/heads/main'
+ steps:
+ - name: Deploy
+ run: echo Deploying...
 
-      - name: Run Tests
-        # ERROR: No dependencies installed, this will fail
-        run: pytest -v 
-
-    # ERROR: This line is unindented and has no Job ID
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build Docker
-        # ERROR: Missing '-' and '.' context
-        run: docker build t myapp
