@@ -1,0 +1,50 @@
+name: Task C2 Deployment Workflow
+
+on:
+  push:
+    branches: [ main ]
+    # Requirement: Do not trigger on README or documentation changes
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+
+jobs:
+  # --- STAGING DEPLOYMENT ---
+  staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying to Staging
+        run: |
+          echo "Deploying application to Staging Environment..."
+          echo "Simulating deployment steps..."
+      
+      - name: Generate Job Summary
+        # Requirement: Use GITHUB_STEP_SUMMARY for reporting
+        run: |
+          echo "### 🚀 Staging Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "* Status: Success" >> $GITHUB_STEP_SUMMARY
+          echo "* Deployer: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "* Timestamp: $(date)" >> $GITHUB_STEP_SUMMARY
+
+  # --- PRODUCTION DEPLOYMENT ---
+  production:
+    name: Deploy to Production
+    needs: staging
+    runs-on: ubuntu-latest
+    # Requirement: Link this job to the environment we created in Step 1
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create GitHub Release
+        # Requirement: Create a Release with a version tag
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          body: |
+            Automated Production Release.
+            Approved and Verified by: ${{ github.actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
