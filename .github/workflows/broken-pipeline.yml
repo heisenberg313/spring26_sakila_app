@@ -1,21 +1,23 @@
-name: Broken CI-CD Pipeline
+name: Broken C3 Pipeline
 
 on:
   push:
-    branches: main  # ERROR: Missing array brackets []
+    branches: main  # ERROR: Missing []
 
 jobs:
   build:
-    runs-on: ubuntu  # ERROR: Missing "-latest" version tag
+    runs-on: ubuntu  # ERROR: Invalid runner tag
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run Tests
-        run: pytest -v  # ERROR: Logic error - Running tests before installing dependencies
+        # ERROR: No dependencies installed, this will fail
+        run: pytest -v 
 
-    # ERROR: Missing Job ID for the next job section
+    # ERROR: This line is unindented and has no Job ID
     runs-on: ubuntu-latest
     steps:
       - name: Build Docker
-        run: docker build t myapp  # ERROR: Missing '-' flag and context '.'
+        # ERROR: Missing '-' and '.' context
+        run: docker build t myapp
