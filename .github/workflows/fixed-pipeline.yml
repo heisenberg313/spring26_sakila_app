@@ -1,0 +1,37 @@
+name: Corrected CI-CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Split into separate dependent jobs for better organization
+  test-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+          
+      - name: Run Pytest
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: pytest -v
+
+  build-stage:
+    needs: test-stage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Docker Image
+        # Corrected syntax with flags and context
+        run: docker build -t myapp .
