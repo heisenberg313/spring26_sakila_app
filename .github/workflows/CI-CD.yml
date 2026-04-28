@@ -104,4 +104,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: malijutt/sakilaappspring:latest
+          tags: heisenberg313/sakilaappspring:latest
