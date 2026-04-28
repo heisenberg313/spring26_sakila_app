@@ -1,0 +1,21 @@
+name: Broken CI-CD Pipeline
+
+on:
+  push:
+    branches: main  # ERROR: Missing array brackets []
+
+jobs:
+  build:
+    runs-on: ubuntu  # ERROR: Missing "-latest" version tag
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: pytest -v  # ERROR: Logic error - Running tests before installing dependencies
+
+    # ERROR: Missing Job ID for the next job section
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker
+        run: docker build t myapp  # ERROR: Missing '-' flag and context '.'
